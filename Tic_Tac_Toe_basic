@@ -1,0 +1,127 @@
+from IPython.display import clear_output
+import random
+
+def display_board(board):
+    clear_output()
+    print(' '+board[7]+' | '+board[8]+' | '+board[9])
+    print('---|---|---')
+    print(' '+board[4]+' | '+board[5]+' | '+board[6])
+    print('---|---|---')
+    print(' '+board[1]+' | '+board[2]+' | '+board[3])
+
+def choose_first():
+    first_player = random.randint(1,2)
+    print('Player '+str(first_player)+' goes first')
+    return first_player
+
+def player_input():
+    player1 = input('Player 1, please pick a marker X or O: ')
+    while player1 != 'X' and player1 !='O':
+        player1 = input('Player 1, please pick a marker X or O: ')
+    return player1
+
+def space_check(board, position):
+    return board[position] == 'X' or board[position] == 'O'
+
+def player_choice(board):
+    pos = int(input('Next position? (enter 1 to 9)'))
+    while space_check(board, pos) == True:
+        pos = int(input('Position is taken. Next position? '))
+    else:
+        return pos
+
+def place_marker(board, marker, position):
+    board[position] = marker
+    return board
+    
+def win_check(board, mark):
+    win = True
+    if board[1] == mark and board[2] == mark and board[3] == mark:
+        return win
+    elif board[4] == mark and board[5] == mark and board[6] == mark:
+        return win
+    elif board[7] == mark and board[8] == mark and board[9] == mark:
+        return win
+    elif board[1] == mark and board[4] == mark and board[7] == mark:
+        return win
+    elif board[2] == mark and board[5] == mark and board[8] == mark:
+        return win
+    elif board[3] == mark and board[6] == mark and board[9] == mark:
+        return win
+    elif board[1] == mark and board[5] == mark and board[9] == mark:
+        return win
+    elif board[3] == mark and board[5] == mark and board[7] == mark:
+        return win
+    else:
+        win = False
+    return win
+
+def full_board_check(board):
+    return ' ' not in board
+
+def replay():
+    play_again = input('Play again? (Yes/No) ')
+    while play_again != 'Yes' and play_again != 'No':
+        play_again = input('Wrong answer. Play again? (Yes/No) ')
+    else:
+        return play_again == 'Yes'
+        
+# game starts
+game_on = True
+
+while game_on:
+    gameboard = ['#',' ',' ',' ',' ',' ',' ',' ',' ',' ']
+    clear_output()
+    print('Welcome to Tic-Tac-Toe!')
+    print('   |   |   ')
+    print('---|---|---')
+    print('   |   |   ')
+    print('---|---|---')
+    print('   |   |   ')
+        
+    player1 = player_input()
+    if player1 == 'X':
+        player2 = 'O'
+    else:
+        player2 = 'X'
+    print('Player 1 will play with marker ' + player1 + ' and Player 2 will play with marker ' + player2)
+    active_player = choose_first()
+    
+    # state 1 = play, state 2 = end
+    state = 1
+
+    while state == 1:
+        if active_player == 1:
+            print('Player 1, you are up!')
+            print(player1)
+            move = player_choice(gameboard)
+            place_marker(gameboard, player1, move)
+            display_board(gameboard)
+            if win_check(gameboard, player1):
+                print('Player 1 wins!')
+                state = 2
+            elif full_board_check(gameboard):
+                print('Game is a draw')
+                state = 2
+            else:
+                active_player = 2
+        elif active_player == 2:
+            print('Player 2, you are up!')
+            print(player2)
+            move = player_choice(gameboard)
+            place_marker(gameboard, player2, move)
+            display_board(gameboard)
+            if win_check(gameboard, player2):
+                print('Player 2 wins!')
+                state = 2
+            elif full_board_check(gameboard):
+                print('Game is a draw')
+                state = 2
+            else:
+                active_player = 1
+    else:
+        if replay():
+            continue
+        else:
+            game_on = False
+            break
